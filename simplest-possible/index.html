@@ -1,0 +1,70 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>vector tile map made with Tegola and Maplibre</title>
+    <meta
+      name="viewport"
+      content="initial-scale=1,maximum-scale=1,user-scalable=no"
+    />
+    <script src="https://unpkg.com/maplibre-gl@2.1.9/dist/maplibre-gl.js"></script>
+    <link
+      href="https://unpkg.com/maplibre-gl@2.1.9/dist/maplibre-gl.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      #map {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+    <script>
+      var map = new maplibregl.Map({
+        container: "map",
+        style: "https://www.linuxbabe.com/maps/mapbox-street-style.json",
+        zoom: 5.43,
+        center: [-3.9, 54.5],
+      });
+
+      map.on("load", function () {
+        // Add a new vector tile source with ID 'linuxbabe'.
+        map.addSource("linuxbabe", {
+          type: "vector",
+          tiles: ["https://tileserver.linuxbabe.com/data/v3/{z}/{x}/{y}.pbf"],
+          minzoom: 6,
+          maxzoom: 14,
+        });
+        map.addLayer({
+          id: "default", // Layer ID
+          type: "line",
+          source: "linuxbabe", // ID of the tile source created above
+          // Source has several layers. We visualize the one with name 'sequence'.
+          "source-layer": "sequence",
+          layout: {
+            "line-cap": "round",
+            "line-join": "round",
+          },
+          paint: {
+            "line-opacity": 0.6,
+            "line-color": "rgb(53, 175, 109)",
+            "line-width": 2,
+          },
+        });
+      });
+
+      map.addControl(new maplibregl.NavigationControl());
+
+      //set max zoom level (0-24)
+      map.setMaxZoom(19);
+    </script>
+  </body>
+</html>
